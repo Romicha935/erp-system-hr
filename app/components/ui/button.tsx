@@ -1,4 +1,4 @@
-import { cn } from "@/app/llb/utils";
+import { cn } from "@/app/lib/utils";
 import React, { ButtonHTMLAttributes, forwardRef } from "react";
 
 

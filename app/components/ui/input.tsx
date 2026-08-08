@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/app/llb/utils";
+import { cn } from "@/app/lib/utils";
 import React, { InputHTMLAttributes, forwardRef, useState } from "react";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
