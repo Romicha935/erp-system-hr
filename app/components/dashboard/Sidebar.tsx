@@ -19,7 +19,7 @@ const navItems = [
   },
   {
     name: "Payment Voucher",
-    href: "/vouchers",
+    href: "/payments",
     icon: <WalletCards />,
   },
   {
