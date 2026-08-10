@@ -37,7 +37,7 @@ export default function PaymentPage() {
             <option value="Approved">Approved</option>
           </select>
 
-          <Link href="/vouchers/create">
+          <Link href="/payments/create">
             <button className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90">
               Create Payment Voucher
             </button>
