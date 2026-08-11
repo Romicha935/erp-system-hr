@@ -69,7 +69,7 @@ const navItems = [
   },
   {
     name: "Procurements",
-    href: "/procurements",
+    href: "/procurement",
     icon: <ShoppingCart />,
   },
 ];
