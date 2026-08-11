@@ -64,7 +64,7 @@ const navItems = [
   },
   {
     name: "Capacity Building",
-    href: "/capacity",
+    href: "/capacity-building",
     icon: <GraduationCap />,
   },
   {
