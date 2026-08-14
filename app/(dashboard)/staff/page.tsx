@@ -2,15 +2,16 @@
 
 import { StaffFilterBar } from "@/app/components/dashboard/staff/StafFilter";
 import { StaffTable } from "@/app/components/dashboard/staff/StafTable";
+import { Staff } from "@/app/types/staf";
 import React, { useState, useMemo } from "react";
 
 
 const mockStaffData: Staff[] = [
-  { id: "1", sn: "01", firstName: "Sandra", lastName: "Williams", gender: "Female", staffId: "0246AHR", phoneNumber: "08130000000", role: "Admin", designation: "Human Resources" },
-  { id: "2", sn: "02", firstName: "Abubakar", lastName: "Ibrahim", gender: "Male", staffId: "0251ITO", phoneNumber: "07062000033", role: "I.T", designation: "Operations" },
-  { id: "3", sn: "03", firstName: "Ikechukwu", lastName: "Ugbonna", gender: "Male", staffId: "0340ITO", phoneNumber: "08130000000", role: "I.T", designation: "Operations" },
-  { id: "4", sn: "04", firstName: "Joshua", lastName: "Adewale", gender: "Male", staffId: "0146APM", phoneNumber: "07038126632", role: "Admin", designation: "Project Management" },
-  { id: "5", sn: "05", firstName: "Fatimah", lastName: "Nasir", gender: "Female", staffId: "0226ACS", phoneNumber: "08130000000", role: "Admin", designation: "Customer Service" },
+  { id: "1", sn: "01", firstName: "Sandra", lastName: "Williams", gender: "Female", staffId: "0246AHR", phoneNumber: "08130000000", email: "sandra.williams@company.com", role: "Admin", designation: "Human Resources" },
+  { id: "2", sn: "02", firstName: "Abubakar", lastName: "Ibrahim", gender: "Male", staffId: "0251ITO", phoneNumber: "07062000033", email: "abubakar.ibrahim@company.com", role: "I.T", designation: "Operations" },
+  { id: "3", sn: "03", firstName: "Ikechukwu", lastName: "Ugbonna", gender: "Male", staffId: "0340ITO", phoneNumber: "08130000000", email: "ikechukwu.ugbonna@company.com", role: "I.T", designation: "Operations" },
+  { id: "4", sn: "04", firstName: "Joshua", lastName: "Adewale", gender: "Male", staffId: "0146APM", phoneNumber: "07038126632", email: "joshua.adewale@company.com", role: "Admin", designation: "Project Management" },
+  { id: "5", sn: "05", firstName: "Fatimah", lastName: "Nasir", gender: "Female", staffId: "0226ACS", phoneNumber: "08130000000", email: "fatimah.nasir@company.com", role: "Admin", designation: "Customer Service" },
 ];
 
 export default function StaffPage() {
