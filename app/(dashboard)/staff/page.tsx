@@ -2,17 +2,9 @@
 
 import { StaffFilterBar } from "@/app/components/dashboard/staff/StafFilter";
 import { StaffTable } from "@/app/components/dashboard/staff/StafTable";
-import { Staff } from "@/app/types/staf";
+import { useGetStaffQuery } from "@/app/redux/dashboard/staffApi";
+
 import React, { useState, useMemo } from "react";
-
-
-const mockStaffData: Staff[] = [
-  { id: "1", sn: "01", firstName: "Sandra", lastName: "Williams", gender: "Female", staffId: "0246AHR", phoneNumber: "08130000000", email: "sandra.williams@company.com", role: "Admin", designation: "Human Resources" },
-  { id: "2", sn: "02", firstName: "Abubakar", lastName: "Ibrahim", gender: "Male", staffId: "0251ITO", phoneNumber: "07062000033", email: "abubakar.ibrahim@company.com", role: "I.T", designation: "Operations" },
-  { id: "3", sn: "03", firstName: "Ikechukwu", lastName: "Ugbonna", gender: "Male", staffId: "0340ITO", phoneNumber: "08130000000", email: "ikechukwu.ugbonna@company.com", role: "I.T", designation: "Operations" },
-  { id: "4", sn: "04", firstName: "Joshua", lastName: "Adewale", gender: "Male", staffId: "0146APM", phoneNumber: "07038126632", email: "joshua.adewale@company.com", role: "Admin", designation: "Project Management" },
-  { id: "5", sn: "05", firstName: "Fatimah", lastName: "Nasir", gender: "Female", staffId: "0226ACS", phoneNumber: "08130000000", email: "fatimah.nasir@company.com", role: "Admin", designation: "Customer Service" },
-];
 
 export default function StaffPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,9 +12,16 @@ export default function StaffPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
-  // Search and Filter Logic
+  const { data, isLoading, isFetching, isError } = useGetStaffQuery({
+    page: currentPage,
+    limit: itemsPerPage,
+  });
+
+  const allStaff = data?.data ?? [];
+
+
   const filteredStaff = useMemo(() => {
-    return mockStaffData.filter((staff) => {
+    return allStaff.filter((staff) => {
       const matchesSearch =
         staff.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         staff.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -32,14 +31,15 @@ export default function StaffPage() {
 
       return matchesSearch && matchesRole;
     });
-  }, [searchTerm, selectedRole]);
+  }, [allStaff, searchTerm, selectedRole]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage) || 1;
-  const paginatedData = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredStaff.slice(start, start + itemsPerPage);
-  }, [filteredStaff, currentPage, itemsPerPage]);
+  if (isError) {
+    return (
+      <div className="bg-white p-8 rounded-2xl border border-red-100 text-center text-red-500 text-sm">
+        Failed to load staff data. Please try again.
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -48,16 +48,20 @@ export default function StaffPage() {
         onSearchChange={setSearchTerm}
         selectedRole={selectedRole}
         onRoleChange={setSelectedRole}
-        totalStaff={mockStaffData.length}
+        totalStaff={data?.meta?.total ?? 0}
       />
 
       <StaffTable
-        data={paginatedData}
-        currentPage={currentPage}
-        totalPages={totalPages}
+        data={filteredStaff}
+        currentPage={data?.meta?.page ?? currentPage}
+        totalPages={data?.meta?.totalPages ?? 1}
         itemsPerPage={itemsPerPage}
+        isLoading={isLoading || isFetching}
         onPageChange={setCurrentPage}
-        onItemsPerPageChange={setItemsPerPage}
+        onItemsPerPageChange={(limit) => {
+          setItemsPerPage(limit);
+          setCurrentPage(1);
+        }}
       />
     </div>
   );

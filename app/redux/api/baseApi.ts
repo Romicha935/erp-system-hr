@@ -5,9 +5,20 @@ export const baseApi = createApi({
 
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
+
+    prepareHeaders: (headers) => {
+  
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (accessToken) {
+        headers.set("Authorization", `Bearer ${accessToken}`);
+      }
+
+      return headers;
+    },
   }),
 
-  tagTypes: ["Staff"],
+  tagTypes: ["Staff","TaxDefinition"],
 
   endpoints: () => ({}),
 });

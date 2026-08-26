@@ -1,77 +1,57 @@
+
 "use client";
 
-import { StaffForm } from "@/app/components/dashboard/staff/StaffModal";
+import { useRouter, useParams } from "next/navigation";
+import { toast } from "react-toastify";
+
 import { StaffFormData } from "@/app/types/staf";
-import React, { use } from "react";
+import { useGetStaffByIdQuery, useUpdateStaffMutation } from "@/app/redux/dashboard/staffApi";
+import { StaffForm } from "@/app/components/dashboard/staff/StaffModal";
 
+export default function EditStaffPage() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
 
-const mockStaffList = [
-  {
-    id: "1",
-    firstName: "Sandra",
-    lastName: "Williams",
-    email: "sandra.w@example.com",
-    officialEmail: "sandra.w@company.com",
-    phoneNumber: "08130000000",
-    gender: "Female",
-    role: "Admin",
-    designation: "Human Resources",
-    staffId: "0246AHR",
-  },
-  {
-    id: "2",
-    firstName: "Abubakar",
-    lastName: "Ibrahim",
-    email: "abubakar.i@example.com",
-    officialEmail: "abubakar.i@company.com",
-    phoneNumber: "07062000033",
-    gender: "Male",
-    role: "I.T",
-    designation: "Operations",
-    staffId: "0251ITO",
-  },
-];
+  const { data: staff, isLoading: isFetching } = useGetStaffByIdQuery(id);
+  const [updateStaff, { isLoading: isUpdating }] = useUpdateStaffMutation();
 
-export default function EditStaffPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-
-  const staffData = mockStaffList.find((item) => item.id === id);
-
-  const handleUpdateStaff = (formData: StaffFormData) => {
-    console.log(`Updating staff with ID ${id}:`, formData);
-    // TODO: RTK Query Mutation Call (e.g., useUpdateStaffMutation)
+  const handleSubmit = async (data: StaffFormData) => {
+    try {
+      const { photo, ...payload } = data;
+      await updateStaff({ id, data: payload }).unwrap();
+      toast.success("Staff updated successfully!");
+      router.push("/staff");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update staff. Please try again.");
+    }
   };
 
-  if (!staffData) {
-    return (
-      <div className="p-8 text-center text-slate-500">
-        Staff record not found.
-      </div>
-    );
+  if (isFetching) {
+    return <div className="py-16 text-center text-slate-400 text-sm">Loading staff details...</div>;
   }
 
-  const initialValues: StaffFormData = {
-    firstName: staffData.firstName,
-    lastName: staffData.lastName,
-    email: staffData.email,
-    officialEmail: staffData.officialEmail,
-    phoneNumber: staffData.phoneNumber,
-    gender: staffData.gender,
-    role: staffData.role,
-    designation: staffData.designation,
-    staffId: staffData.staffId,
-    photo: null,
-  };
+  if (!staff) {
+    return <div className="py-16 text-center text-red-500 text-sm">Staff not found.</div>;
+  }
 
   return (
     <StaffForm
-      initialValues={initialValues}
-      onSubmit={handleUpdateStaff}
-      isEditMode={true}
+      initialValues={{
+        firstName: staff.firstName,
+        lastName: staff.lastName,
+        email: staff.email,
+        officialEmail: staff.officialEmail,
+        phone: staff.phone,
+        gender: staff.gender,
+        role: staff.role,
+        designation: staff.designation,
+        staffId: staff.staffId,
+        photo: null,
+      }}
+      onSubmit={handleSubmit}
+      isLoading={isUpdating}
+      isEditMode
     />
   );
 }

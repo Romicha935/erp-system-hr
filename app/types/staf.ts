@@ -14,14 +14,14 @@ export interface Staff {
 }
 
 export interface StaffFormData {
+  staffId: string;
   firstName: string;
   lastName: string;
+  phone: string;
   email: string;
   officialEmail: string;
-  phoneNumber: string;
-  gender: string;
+  gender: "MALE" | "FEMALE" | "OTHER";
   role: string;
   designation: string;
-  staffId: string;
   photo?: File | null;
 }

@@ -33,7 +33,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={inputType}
             className={cn(
-              "w-full px-4 py-3 text-sm bg-white border border-slate-200 rounded-xl outline-none transition-all duration-200 text-slate-900 placeholder:text-slate-400",
+              "w-full px-4 py-3 text-sm bg-white border border-slate-400 rounded-md outline-none transition-all duration-200 text-slate-900 placeholder:text-slate-400",
               "focus:border-blue-500 focus:ring-2 focus:ring-blue-100",
               "disabled:bg-slate-50 disabled:text-slate-400",
               isPasswordType && "pr-11", // Password icon er jonno right padding

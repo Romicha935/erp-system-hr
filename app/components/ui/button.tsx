@@ -14,7 +14,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const variants = {
-      // এই সেই ব্লু গ্রাডিয়েন্ট
+     
       primary: "bg-gradient-to-r from-[#20A0E5] to-[#1F62B8] text-white hover:from-[#1F95D1] hover:to-[#1950A5] disabled:from-[#A8DDF7] disabled:to-[#A7C8E8]",
       secondary: "bg-slate-800 text-white hover:bg-slate-900",
       outline: "border border-slate-300 text-slate-700 hover:bg-slate-50",
@@ -23,7 +23,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const sizes = {
       sm: "px-3 py-1.5 text-xs rounded-full",
-      md: "px-6 py-3 text-base rounded-full", // গোল বাটন
+      md: "px-6 py-3 text-base rounded-full", 
       lg: "px-8 py-4 text-lg rounded-full",
     };
 
@@ -32,7 +32,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          "font-semibold transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.99]",
+          "font-semibold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]",
           variants[variant],
           sizes[size],
           className
@@ -40,7 +40,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-md animate-spin" />
         ) : null}
         {children}
       </button>
