@@ -51,7 +51,7 @@ export function DataTable<T extends { id: string }>({
           <select
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="px-2 py-1 border border-slate-200 rounded-lg outline-none font-bold text-slate-800 bg-white"
+            className="px-2 py-1 border border-slate-200 rounded-lg outline-none font-bold text-slate-800 bg-white cursor-pointer"
           >
             <option value={10}>10</option>
             <option value={12}>12</option>
