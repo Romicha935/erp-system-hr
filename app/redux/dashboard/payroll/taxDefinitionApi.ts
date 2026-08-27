@@ -22,7 +22,7 @@ export interface TaxDefinitionListResponse {
 
 export interface CreateTaxDefinitionRequest {
   taxType: string;
-  percentage: string | number;
+  percentage:  number;
 }
 
 export interface UpdateTaxDefinitionRequest {
