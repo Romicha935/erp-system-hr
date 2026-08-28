@@ -42,9 +42,7 @@ export default function EditSalaryDefinitionPage() {
   const {
     data: salaryData,
     isLoading: isFetching,
-  } = useGetSalaryDefinitionsQuery({
-    limit: 1000,
-  });
+  } = useGetSalaryDefinitionsQuery();
 
   const [updateSalaryDefinition, { isLoading: isUpdating }] =
     useUpdateSalaryDefinitionMutation();

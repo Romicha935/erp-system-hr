@@ -1,199 +1,159 @@
+// app/(dashboard)/payroll/payslips/create/page.tsx
 "use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { ArrowLeft } from "lucide-react";
+import { useGetStaffQuery } from "@/app/redux/dashboard/staffApi";
+import { useCreatePayslipMutation } from "@/app/redux/dashboard/payroll/payslipApi";
+
+const inputClass =
+  "w-full px-3.5 py-2.5 text-sm text-slate-900 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all";
+const labelClass = "text-xs font-semibold text-slate-700 block mb-1.5";
+
+const monthOptions = [
+  { value: 1, label: "January" },
+  { value: 2, label: "February" },
+  { value: 3, label: "March" },
+  { value: 4, label: "April" },
+  { value: 5, label: "May" },
+  { value: 6, label: "June" },
+  { value: 7, label: "July" },
+  { value: 8, label: "August" },
+  { value: 9, label: "September" },
+  { value: 10, label: "October" },
+  { value: 11, label: "November" },
+  { value: 12, label: "December" },
+];
+
+const currentYear = new Date().getFullYear();
+const yearOptions = Array.from({ length: 6 }, (_, i) => currentYear - 3 + i);
 
 export default function CreatePayslipPage() {
-  const [basicSalary, setBasicSalary] = useState<number>(0);
-  const [housing, setHousing] = useState<number>(0);
-  const [transport, setTransport] = useState<number>(0);
-  const [utility, setUtility] = useState<number>(0);
-  const [productivity, setProductivity] = useState<number>(0);
-  const [communication, setCommunication] = useState<number>(0);
-  const [inconvenience, setInconvenience] = useState<number>(0);
+  const router = useRouter();
 
-  const [tax, setTax] = useState<number>(0);
-  const [pension, setPension] = useState<number>(0);
+  const [staffId, setStaffId] = useState("");
+  const [month, setMonth] = useState<number | "">("");
+  const [year, setYear] = useState<number | "">(currentYear);
 
-  // Auto Calculated Fields
-  const grossSalary = basicSalary + housing + transport + utility + productivity + communication + inconvenience;
-  const totalDeduction = tax + pension;
-  const netSalary = grossSalary - totalDeduction;
+  const { data: staffData, isLoading: isStaffLoading } = useGetStaffQuery({ limit: 100 });
+  const [createPayslip, { isLoading }] = useCreatePayslipMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const staffList = staffData?.data ?? [];
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Payslip Data:", { grossSalary, totalDeduction, netSalary });
+
+    if (!staffId || !month || !year) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    try {
+      const result = await createPayslip({
+        staffId,
+        month: Number(month),
+        year: Number(year),
+      }).unwrap();
+
+      toast.success("Payslip created successfully! 🎉");
+      router.push(`/payroll/payslips/${result.data.id}`);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to create payslip.");
+    }
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
-      <Link href="/payroll" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">
-        ‹ Back
+    <div className="space-y-5 max-w-2xl mx-auto">
+      <Link
+        href="/payroll"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
+      >
+        <ArrowLeft size={16} />
+        Back
       </Link>
 
-      <div className="space-y-6">
-        <h1 className="text-xl font-bold text-slate-900">Create Payslip</h1>
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="px-6 sm:px-8 py-6 border-b border-slate-100">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Create Payslip</h1>
+          <p className="text-sm text-slate-400 mt-1">
+            Select a staff member and period to generate a payslip
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Section 1: Basic Information */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Basic Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Staff name</label>
-                <select className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
-                  <option value="">Select staff</option>
-                  <option value="1">Abubakar Alghazali</option>
-                  <option value="2">Fatima Mohammed</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Title</label>
-                <select className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
-                  <option value="">Select title</option>
-                  <option value="md">Managing Director</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Level</label>
-                <select className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500">
-                  <option value="">Select level</option>
-                  <option value="ceo">MD/CEO</option>
-                </select>
-              </div>
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
+          <div>
+            <label className={labelClass}>Staff member</label>
+            <select
+              value={staffId}
+              onChange={(e) => setStaffId(e.target.value)}
+              className={inputClass}
+              disabled={isStaffLoading}
+              required
+            >
+              <option value="">
+                {isStaffLoading ? "Loading staff..." : "Select staff member"}
+              </option>
+              {staffList.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.firstName} {s.lastName} ({s.staffId})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Month</label>
+              <select
+                value={month}
+                onChange={(e) => setMonth(e.target.value ? Number(e.target.value) : "")}
+                className={inputClass}
+                required
+              >
+                <option value="">Select month</option>
+                {monthOptions.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className={labelClass}>Year</label>
+              <select
+                value={year}
+                onChange={(e) => setYear(e.target.value ? Number(e.target.value) : "")}
+                className={inputClass}
+                required
+              >
+                {yearOptions.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
-          {/* Section 2: Salary Structure */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Salary Structure</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Basic salary</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setBasicSalary(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Housing allowance</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setHousing(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Transport allowance</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setTransport(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Utility allowance</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setUtility(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Productivity allowance</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setProductivity(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Communication allowance</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setCommunication(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Inconvenience allowance</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setInconvenience(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Gross Salary</label>
-                <input
-                  type="text"
-                  readOnly
-                  value={grossSalary ? `₦${grossSalary.toLocaleString()}` : "Amount"}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-100 border border-slate-200 rounded-xl text-slate-600 font-bold outline-none cursor-not-allowed"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section 3: Deductions */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Deductions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">TAX/PAYE</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setTax(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Employee pension</label>
-                <input
-                  type="number"
-                  placeholder="Enter amount"
-                  onChange={(e) => setPension(Number(e.target.value))}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1.5">Total deduction</label>
-                <input
-                  type="text"
-                  readOnly
-                  value={totalDeduction ? `₦${totalDeduction.toLocaleString()}` : "Amount"}
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-100 border border-slate-200 rounded-xl text-slate-600 font-bold outline-none cursor-not-allowed"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section 4: Net Salary */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Net Salary</h2>
-            <div className="max-w-xs">
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">Net salary</label>
-              <input
-                type="text"
-                readOnly
-                value={netSalary ? `₦${netSalary.toLocaleString()}` : "Amount"}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-100 border border-slate-200 rounded-xl text-slate-900 font-extrabold outline-none cursor-not-allowed"
-              />
-            </div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-end pt-6 border-t border-slate-100">
+            <Link href="/payroll">
+              <button
+                type="button"
+                className="w-full sm:w-auto px-6 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Cancel
+              </button>
+            </Link>
             <button
               type="submit"
-              className="px-8 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity mt-4"
+              disabled={isLoading}
+              className="w-full sm:w-auto px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-100 hover:opacity-90 transition-opacity disabled:opacity-50"
             >
-              Create Payslip
+              {isLoading ? "Generating..." : "Create Payslip"}
             </button>
           </div>
         </form>
