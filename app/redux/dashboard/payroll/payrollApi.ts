@@ -62,11 +62,16 @@ export interface GetPayrollsParams {
   status?: PayrollStatus;
 }
 
+export interface CreatePayrollItemRequest {
+  staffId: string;
+}
+
 export interface CreatePayrollRequest {
   paymentName: string;
   designation: string;
   month: number;
   year: number;
+  items: CreatePayrollItemRequest[];
 }
 
 export interface UpdatePayrollRequest {

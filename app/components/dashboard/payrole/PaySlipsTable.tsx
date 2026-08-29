@@ -59,7 +59,7 @@ export const PayslipsTable: React.FC = () => {
           </p>
         </div>
         <Link href="/payroll/payslips/create">
-          <button className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md shadow-indigo-100 hover:opacity-90 transition-opacity">
+          <button className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-md cursor-pointer shadow-md shadow-indigo-100 hover:opacity-90 transition-opacity">
             <Plus size={15} />
             Create Payslip
           </button>

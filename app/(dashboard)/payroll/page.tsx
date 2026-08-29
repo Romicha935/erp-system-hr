@@ -15,7 +15,7 @@ export default function PayrollPage() {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Top Metrics & Chart Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="">
         <div className="lg:col-span-7">
           <PayrollStats />
         </div>

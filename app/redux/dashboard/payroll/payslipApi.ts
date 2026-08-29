@@ -62,6 +62,8 @@ export interface CreatePayslipRequest {
   staffId: string;
   month: number;
   year: number;
+  tax: number;
+  pension: number;
 }
 
 export interface UpdatePayslipRequest {
@@ -74,8 +76,8 @@ export interface UpdatePayslipRequest {
     productivityAllowance: string | number;
     communicationAllowance: string | number;
     inconvenienceAllowance: string | number;
-    tax: string | number;
-    pension: string | number;
+    tax:  number;
+    pension: number;
     deductions: string | number;
   }>;
 }
@@ -122,6 +124,7 @@ export const payslipApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, { id }) => [
         { type: "Payslip", id },
+
         { type: "Payslip", id: "LIST" },
       ],
     }),

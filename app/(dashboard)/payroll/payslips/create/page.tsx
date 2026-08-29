@@ -37,36 +37,77 @@ export default function CreatePayslipPage() {
   const [staffId, setStaffId] = useState("");
   const [month, setMonth] = useState<number | "">("");
   const [year, setYear] = useState<number | "">(currentYear);
+  const [tax, setTax] = useState("");
+  const [pension, setPension] = useState("");
 
   const { data: staffData, isLoading: isStaffLoading } = useGetStaffQuery({ limit: 100 });
   const [createPayslip, { isLoading }] = useCreatePayslipMutation();
 
   const staffList = staffData?.data ?? [];
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!staffId || !month || !year) {
+  //     toast.error("Please fill in all required fields");
+  //     return;
+  //   }
+
+  //   try {
+  //     const result = await createPayslip({
+  //       staffId,
+  //       month: Number(month),
+  //       year: Number(year),
+  //       tax: tax ? Number(tax) : 0,
+  //       pension: pension ? Number(pension) : 0,
+  //     }).unwrap();
+
+  //     toast.success("Payslip created successfully!");
+  //     router.push(`/payroll/payslips/${result.data.id}`);
+  //   } catch (error: any) {
+  //     toast.error(error?.data?.message || "Failed to create payslip.");
+  //   }
+  // };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!staffId || !month || !year) {
-      toast.error("Please fill in all fields");
-      return;
-    }
+  if (!staffId || !month || !year) {
+    toast.error("Please fill in all required fields");
+    return;
+  }
 
-    try {
-      const result = await createPayslip({
-        staffId,
-        month: Number(month),
-        year: Number(year),
-      }).unwrap();
+  try {
+    const result = await createPayslip({
+      staffId,
+      month: Number(month),
+      year: Number(year),
+      tax: tax ? Number(tax) : 0,
+      pension: pension ? Number(pension) : 0,
+    }).unwrap();
 
-      toast.success("Payslip created successfully! 🎉");
+    console.log("CREATE PAYSLIP RESPONSE:", result);
+
+    toast.success("Payslip created successfully!");
+
+    if (result?.data?.id) {
       router.push(`/payroll/payslips/${result.data.id}`);
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to create payslip.");
+    } else {
+      router.push("/payroll");
     }
-  };
+  } catch (error: any) {
+    console.error("CREATE PAYSLIP ERROR:", error);
 
+    toast.error(
+      error?.data?.message ||
+        error?.error?.message ||
+        "Failed to create payslip."
+    );
+  }
+};
   return (
-    <div className="space-y-5 max-w-2xl mx-auto">
+    <div className="space-y-5 w-full">
       <Link
         href="/payroll"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
@@ -79,7 +120,7 @@ export default function CreatePayslipPage() {
         <div className="px-6 sm:px-8 py-6 border-b border-slate-100">
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Create Payslip</h1>
           <p className="text-sm text-slate-400 mt-1">
-            Select a staff member and period to generate a payslip
+            Select a staff member, period, and applicable deductions
           </p>
         </div>
 
@@ -139,11 +180,39 @@ export default function CreatePayslipPage() {
             </div>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Tax</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                value={tax}
+                onChange={(e) => setTax(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Pension</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                value={pension}
+                onChange={(e) => setPension(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-3 justify-end pt-6 border-t border-slate-100">
             <Link href="/payroll">
               <button
                 type="button"
-                className="w-full sm:w-auto px-6 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 text-sm font-semibold cursor-pointer text-slate-600 bg-slate-100 rounded-md hover:bg-slate-200 transition-colors"
               >
                 Cancel
               </button>
@@ -151,7 +220,7 @@ export default function CreatePayslipPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full sm:w-auto px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-sm rounded-xl shadow-md shadow-indigo-100 hover:opacity-90 transition-opacity disabled:opacity-50"
+              className="w-full sm:w-auto px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-sm rounded-md shadow-md cursor-pointer shadow-indigo-100 hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {isLoading ? "Generating..." : "Create Payslip"}
             </button>
