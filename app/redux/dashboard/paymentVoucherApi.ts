@@ -1,3 +1,4 @@
+
 import { baseApi } from "../api/baseApi";
 
 export type PaymentVoucherStatus =
@@ -25,7 +26,6 @@ interface StaffInfo {
 export interface PaymentVoucher {
   id: string;
   procurementId: string;
-
   vatPercentage: string;
   vatAmount: string;
   grossAmount: string;
@@ -48,17 +48,13 @@ export interface PaymentVoucher {
     unitPrice: string;
     totalPrice: string;
     status: string;
-
     hasAttachment: boolean;
     attachmentType: string | null;
     attachmentUrl: string | null;
-
     requestedById: string;
     sentToId: string;
-
     createdAt: string;
     updatedAt: string;
-
     requestedBy: StaffInfo;
     sentTo: StaffInfo;
   };
@@ -105,7 +101,6 @@ export interface CreatePaymentVoucherRequest {
   vatPercentage: number;
   initiatedById: string;
   remarks?: string;
-
   beneficiary: {
     accountName: string;
     accountNumber: string;
@@ -130,7 +125,7 @@ export interface RejectPaymentVoucherRequest {
 
 export const paymentVoucherApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // GET /payment-vouchers
+    // GET /payment-voucher
     getPaymentVouchers: builder.query<
       PaymentVoucherListResponse,
       { page?: number; limit?: number } | void
@@ -143,7 +138,7 @@ export const paymentVoucherApi = baseApi.injectEndpoints({
       providesTags: ["PaymentVoucher"],
     }),
 
-    // POST /payment-vouchers
+    // POST /payment-voucher
     createPaymentVoucher: builder.mutation<
       PaymentVoucherResponse,
       CreatePaymentVoucherRequest
@@ -156,7 +151,7 @@ export const paymentVoucherApi = baseApi.injectEndpoints({
       invalidatesTags: ["PaymentVoucher"],
     }),
 
-    // PATCH /payment-vouchers/:id/verify
+    // PATCH /payment-voucher/:id/verify
     verifyPaymentVoucher: builder.mutation<
       PaymentVoucherActionResponse,
       string
@@ -168,7 +163,7 @@ export const paymentVoucherApi = baseApi.injectEndpoints({
       invalidatesTags: ["PaymentVoucher"],
     }),
 
-    // PATCH /payment-vouchers/:id/approve
+    // PATCH /payment-voucher/:id/approve
     approvePaymentVoucher: builder.mutation<
       PaymentVoucherActionResponse,
       string
@@ -180,7 +175,7 @@ export const paymentVoucherApi = baseApi.injectEndpoints({
       invalidatesTags: ["PaymentVoucher"],
     }),
 
-    // PATCH /payment-vouchers/:id/reject
+    // PATCH /payment-voucher/:id/reject
     rejectPaymentVoucher: builder.mutation<
       PaymentVoucherActionResponse,
       RejectPaymentVoucherRequest
@@ -206,3 +201,4 @@ export const {
   useApprovePaymentVoucherMutation,
   useRejectPaymentVoucherMutation,
 } = paymentVoucherApi;
+

@@ -210,7 +210,7 @@ export default function PaymentVoucherDetailPage({
               <button
                 onClick={handleVerify}
                 disabled={isSubmitting}
-                className="px-8 py-2.5 bg-sky-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="px-8 py-2.5 bg-sky-600 text-white font-semibold text-xs rounded-md cursor-pointer shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {isVerifying ? "Verifying..." : "Verify"}
               </button>
@@ -219,7 +219,7 @@ export default function PaymentVoucherDetailPage({
               <button
                 onClick={handleApprove}
                 disabled={isSubmitting}
-                className="px-8 py-2.5 bg-emerald-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="px-8 py-2.5 bg-emerald-600 text-white font-semibold text-xs rounded-md cursor-pointer shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {isApproving ? "Approving..." : "Approve"}
               </button>
@@ -227,7 +227,7 @@ export default function PaymentVoucherDetailPage({
             <button
               onClick={handleReject}
               disabled={isSubmitting}
-              className="px-8 py-2.5 border border-rose-500 text-rose-500 font-semibold text-xs rounded-xl hover:bg-rose-50 transition-colors disabled:opacity-50"
+              className="px-8 py-2.5 border border-rose-500 text-rose-500 font-semibold text-xs rounded-md cursor-pointer hover:bg-rose-50 transition-colors disabled:opacity-50"
             >
               {isRejecting ? "Rejecting..." : "Reject"}
             </button>
