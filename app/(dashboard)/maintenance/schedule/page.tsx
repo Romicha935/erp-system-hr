@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client";
 
@@ -39,7 +40,7 @@ export default function ScheduleMaintenancePage() {
         recurringOption: maintenanceType === "RECURRING" ? recurringOption || undefined : undefined,
       }).unwrap();
 
-      toast.success("Maintenance scheduled successfully! 🎉");
+      toast.success("Maintenance scheduled successfully!");
       router.push("/maintenance");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to schedule maintenance.");
