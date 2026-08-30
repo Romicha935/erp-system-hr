@@ -1,33 +1,57 @@
+
 "use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useCreateMaintenanceMutation, MaintenanceType } from "@/app/redux/dashboard/maintenanceApi";
+
+const inputClass =
+  "w-full px-3.5 py-2.5 text-xs text-slate-900 bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors";
+const labelClass = "text-xs font-semibold text-slate-700 block mb-1.5";
 
 export default function ScheduleMaintenancePage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    itemName: "",
-    number: "",
-    date: "",
-    maintenanceType: "",
-    recurringOption: "",
-  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [itemName, setItemName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [scheduledDate, setScheduledDate] = useState("");
+  const [maintenanceType, setMaintenanceType] = useState<MaintenanceType | "">("");
+  const [recurringOption, setRecurringOption] = useState("");
+
+  const [createMaintenance, { isLoading }] = useCreateMaintenanceMutation();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Scheduled Maintenance:", formData);
-    router.push("/maintenance");
+
+    if (!itemName.trim() || !quantity || !scheduledDate || !maintenanceType) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      await createMaintenance({
+        itemName,
+        quantity: parseInt(quantity, 10),
+        scheduledDate,
+        maintenanceType,
+        recurringOption: maintenanceType === "RECURRING" ? recurringOption || undefined : undefined,
+      }).unwrap();
+
+      toast.success("Maintenance scheduled successfully! 🎉");
+      router.push("/maintenance");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to schedule maintenance.");
+    }
   };
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-10">
-      {/* Back Button */}
       <Link href="/maintenance" className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:underline">
         ‹ Back
       </Link>
 
-      {/* Form Container */}
       <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Schedule Maintenance</h1>
@@ -37,91 +61,83 @@ export default function ScheduleMaintenancePage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Row 1 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">Item name</label>
-              <select
-                value={formData.itemName}
-                onChange={(e) => setFormData({ ...formData, itemName: e.target.value })}
+              <label className={labelClass}>Item name</label>
+              <input
+                type="text"
+                placeholder="Enter item name"
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
                 required
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors"
-              >
-                <option value="">Select item</option>
-                <option value="2Hp Hisense Air Condition">2Hp Hisense Air Condition</option>
-                <option value="Generator 500kVA">Generator 500kVA</option>
-              </select>
+                className={inputClass}
+              />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">Number</label>
-              <select
-                value={formData.number}
-                onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+              <label className={labelClass}>Quantity</label>
+              <input
+                type="number"
+                min="1"
+                placeholder="Enter quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
                 required
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors"
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Scheduled date</label>
+              <input
+                type="date"
+                value={scheduledDate}
+                onChange={(e) => setScheduledDate(e.target.value)}
+                required
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className={labelClass}>Maintenance type</label>
+              <select
+                value={maintenanceType}
+                onChange={(e) => setMaintenanceType(e.target.value as MaintenanceType)}
+                required
+                className={inputClass}
               >
                 <option value="">Select option</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
+                <option value="RECURRING">Recurring</option>
+                <option value="ONE_TIME">One-time</option>
               </select>
             </div>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">Date</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  placeholder="DD/MM/YYYY"
-                  required
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors"
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">📅</span>
+            {maintenanceType === "RECURRING" && (
+              <div>
+                <label className={labelClass}>Recurring option</label>
+                <select
+                  value={recurringOption}
+                  onChange={(e) => setRecurringOption(e.target.value)}
+                  className={inputClass}
+                >
+                  <option value="">Select option</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Every two months">Every two months</option>
+                  <option value="Quarterly">Quarterly</option>
+                </select>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Row 2 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">Maintenance type</label>
-              <select
-                value={formData.maintenanceType}
-                onChange={(e) => setFormData({ ...formData, maintenanceType: e.target.value })}
-                required
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors"
-              >
-                <option value="">Select option</option>
-                <option value="Recurring">Recurring</option>
-                <option value="One-time">One-time</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-700 block mb-1.5">Recurring option</label>
-              <select
-                value={formData.recurringOption}
-                onChange={(e) => setFormData({ ...formData, recurringOption: e.target.value })}
-                required
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors"
-              >
-                <option value="">Select option</option>
-                <option value="Every two months">Every two months</option>
-                <option value="Monthly">Monthly</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Submit Button */}
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity"
+              disabled={isLoading}
+              className="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-md cursor-pointer shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
             >
-              Schedule Maintenance
+              {isLoading ? "Scheduling..." : "Schedule Maintenance"}
             </button>
           </div>
         </form>

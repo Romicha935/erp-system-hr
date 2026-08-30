@@ -1,78 +1,136 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// app/(dashboard)/maintenance/[id]/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { use } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import {
+  useGetMaintenanceByIdQuery,
+  useUpdateMaintenanceMutation,
+  MaintenanceStatus,
+} from "@/app/redux/dashboard/maintenanceApi";
 
-export default function MaintenanceDetailsPage() {
-  const [status, setStatus] = useState("Completed");
+const statusColor: Record<MaintenanceStatus, string> = {
+  PENDING: "text-amber-600",
+  COMPLETED: "text-emerald-600",
+  OVERDUE: "text-rose-600",
+};
+
+export default function MaintenanceDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+
+  const { data, isLoading } = useGetMaintenanceByIdQuery(id);
+  const [updateMaintenance, { isLoading: isUpdating }] = useUpdateMaintenanceMutation();
+
+  const formatDate = (value: string) => new Date(value).toLocaleDateString("en-GB");
+
+  const handleStatusChange = async (status: MaintenanceStatus) => {
+    try {
+      await updateMaintenance({ id, data: { status } }).unwrap();
+      toast.success("Status updated successfully");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update status.");
+    }
+  };
+
+ if (isLoading) {
+  return (
+    <div className="space-y-6 max-w-6xl mx-auto pb-10 animate-pulse">
+      {/* Back skeleton */}
+      <div className="h-4 w-16 bg-slate-200 rounded" />
+
+      {/* Main card skeleton */}
+      <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
+        {/* Title */}
+        <div className="h-6 w-52 bg-slate-200 rounded-lg" />
+
+        {/* Details */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <div key={item} className="space-y-2">
+              <div className="h-3 w-20 bg-slate-200 rounded" />
+              <div className="h-4 w-24 bg-slate-300 rounded" />
+            </div>
+          ))}
+        </div>
+
+        {/* Attachment skeleton */}
+        <div className="h-4 w-36 bg-slate-200 rounded" />
+      </div>
+    </div>
+  );
+}
+
+  if (!data?.data) {
+    return <div className="py-16 text-center text-rose-500 text-sm">Maintenance record not found.</div>;
+  }
+
+  const maintenance = data.data;
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-10">
-      {/* Back Button */}
       <Link href="/maintenance" className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:underline">
         ‹ Back
       </Link>
 
-      {/* Top Details Card */}
       <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
         <h1 className="text-xl font-bold text-slate-900">Scheduled Maintenance</h1>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 text-xs">
           <div>
             <span className="text-slate-400 font-medium block mb-1">Item name</span>
-            <span className="font-bold text-slate-900">2Hp Hisense Air Condition</span>
+            <span className="font-bold text-slate-900">{maintenance.itemName}</span>
           </div>
           <div>
-            <span className="text-slate-400 font-medium block mb-1">Number</span>
-            <span className="font-bold text-slate-900">3</span>
+            <span className="text-slate-400 font-medium block mb-1">Quantity</span>
+            <span className="font-bold text-slate-900">{maintenance.quantity}</span>
           </div>
           <div>
             <span className="text-slate-400 font-medium block mb-1">Date</span>
-            <span className="font-bold text-slate-900">18/11/2022</span>
+            <span className="font-bold text-slate-900">{formatDate(maintenance.scheduledDate)}</span>
           </div>
           <div>
             <span className="text-slate-400 font-medium block mb-1">Maintenance type</span>
-            <span className="font-bold text-slate-900">Recurring</span>
+            <span className="font-bold text-slate-900">
+              {maintenance.maintenanceType === "RECURRING" ? "Recurring" : "One-time"}
+            </span>
           </div>
           <div>
             <span className="text-slate-400 font-medium block mb-1">Recurring type</span>
-            <span className="font-bold text-slate-900">Every two months</span>
+            <span className="font-bold text-slate-900">{maintenance.recurringOption ?? "—"}</span>
           </div>
           <div>
             <span className="text-slate-400 font-medium block mb-1">Status</span>
             <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="text-emerald-600 font-bold bg-transparent outline-none cursor-pointer"
+              value={maintenance.status}
+              onChange={(e) => handleStatusChange(e.target.value as MaintenanceStatus)}
+              disabled={isUpdating}
+              className={`font-bold bg-transparent outline-none cursor-pointer ${statusColor[maintenance.status]}`}
             >
-              <option value="Completed">Completed ∨</option>
-              <option value="Pending">Pending</option>
-              <option value="Overdue">Overdue</option>
+              <option value="PENDING">Pending</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="OVERDUE">Overdue</option>
             </select>
           </div>
         </div>
 
-        <div>
-          <button className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity">
-            Attach Payment Invoice
-          </button>
-        </div>
-      </div>
-
-      {/* Bottom Breakdown Placeholder Card */}
-      <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm min-h-[300px] flex flex-col justify-between">
-        <h2 className="text-base font-bold text-slate-900">Maintenance Breakdown</h2>
-
-        {/* Custom Section */}
-        <div className="py-12 text-center">
-          <p className="text-slate-400 text-sm font-semibold">Breakdown details will be rendered here.</p>
-        </div>
-
-        <div>
-          <button className="px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity">
-            Submit
-          </button>
-        </div>
+        {maintenance.attachmentUrl && (
+          <div className="text-xs">
+            <a 
+              href={maintenance.attachmentUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 font-semibold hover:underline"
+            >
+              View attached invoice
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

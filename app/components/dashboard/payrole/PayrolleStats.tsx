@@ -94,7 +94,7 @@ export const PayrollStats = () => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm h-28 animate-pulse" />
         ))}
@@ -103,7 +103,7 @@ export const PayrollStats = () => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
       {stats.map((stat, idx) => (
         <div
           key={idx}
