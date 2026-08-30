@@ -1,43 +1,104 @@
 "use client";
 
 import React from "react";
+import {
+  Landmark,
+  CircleDollarSign,
+  Wallet,
+  ChartPie,
+} from "lucide-react";
+import { useGetBudgetSummaryQuery } from "@/app/redux/dashboard/budgetApi";
 
-interface MetricCardProps {
-  title: string;
-  amount: string;
-  subtext?: string;
-  iconBg: string;
-}
+const MetricCardSkeleton = () => {
+  return (
+    <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <div className="h-7 w-32 bg-slate-200 rounded-md animate-pulse" />
+          <div className="h-3 w-28 bg-slate-200 rounded-md animate-pulse" />
+        </div>
 
-const metricsData: MetricCardProps[] = [
-  { title: "Total annual budget", amount: "₦23,000,000", subtext: "5% more than last year", iconBg: "bg-sky-100 text-sky-600" },
-  { title: "Amount used, YTD", amount: "₦10,000,000", iconBg: "bg-amber-100 text-amber-600" },
-  { title: "Total budget balance", amount: "₦13,000,000", iconBg: "bg-purple-100 text-purple-600" },
-  { title: "Budget % used", amount: "48%", iconBg: "bg-emerald-100 text-emerald-600" },
-];
+        <div className="w-10 h-10 rounded-full bg-slate-200 animate-pulse" />
+      </div>
+    </div>
+  );
+};
 
 export const BudgetMetrics: React.FC = () => {
+  const { data, isLoading } = useGetBudgetSummaryQuery();
+
+  const formatCurrency = (value: number) =>
+    `₦${value.toLocaleString("en-NG")}`;
+
+  const metrics = data
+    ? [
+        {
+          title: "Total annual budget",
+          amount: formatCurrency(data.data.totalAnnualBudget),
+          icon: Landmark,
+          iconBg: "bg-sky-100 text-sky-600",
+        },
+        {
+          title: "Amount used, YTD",
+          amount: formatCurrency(data.data.amountUsedYTD),
+          icon: CircleDollarSign,
+          iconBg: "bg-amber-100 text-amber-600",
+        },
+        {
+          title: "Total budget balance",
+          amount: formatCurrency(data.data.totalBalance),
+          icon: Wallet,
+          iconBg: "bg-purple-100 text-purple-600",
+        },
+        {
+          title: "Budget % used",
+          amount: `${data.data.percentUsed}%`,
+          icon: ChartPie,
+          iconBg: "bg-emerald-100 text-emerald-600",
+        },
+      ]
+    : [];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1, 2, 3, 4].map((item) => (
+          <MetricCardSkeleton key={item} />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {metricsData.map((item, index) => (
-        <div key={index} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-between space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-black text-slate-900">{item.amount}</h2>
-              <p className="text-xs font-semibold text-slate-500 mt-0.5">{item.title}</p>
+      {metrics.map((item, index) => {
+        const Icon = item.icon;
+
+        return (
+          <div
+            key={index}
+            className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm"
+          >
+            {/* Amount + Icon */}
+            <div className="flex items-start justify-between gap-4">
+              <h2 className="text-2xl font-black text-slate-900 leading-tight truncate">
+                {item.amount}
+              </h2>
+
+              <div
+                className={`w-10 h-10 min-w-10 rounded-full flex items-center justify-center ${item.iconBg}`}
+              >
+                <Icon size={19} strokeWidth={2} />
+              </div>
             </div>
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm ${item.iconBg}`}>
-              💰
-            </div>
+
+            {/* Title */}
+            <p className="text-xs font-semibold text-slate-500 mt-3">
+              {item.title}
+            </p>
           </div>
-          {item.subtext && (
-            <div className="flex items-center gap-1 text-[11px] font-medium text-emerald-600">
-              <span>↑</span>
-              <span>{item.subtext}</span>
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

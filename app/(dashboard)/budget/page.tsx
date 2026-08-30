@@ -1,83 +1,145 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { Pencil, Trash2 } from "lucide-react";
 import { BudgetMetrics } from "@/app/components/dashboard/budget/Budgetmatrics";
+import { DataTable, Column } from "@/app/components/ui/DataTable";
+import { ActionMenu } from "@/app/components/ui/ActionMenu";
 
-
-interface BudgetHistoryItem {
-  id: string;
-  sn: string;
-  budgetNo: string;
-  description: string;
-  budgetedAmount: string;
-  actualAmount: string;
-  variance: string;
-  isPositive: boolean;
-  date: string;
-}
-
-const budgetHistoryList: BudgetHistoryItem[] = [
-  { id: "1", sn: "01", budgetNo: "00211235", description: "Purchase of 10 units, 2Hp Hisense Air Conditions", budgetedAmount: "1,400,000.00", actualAmount: "1,380,000.00", variance: "20,000.00", isPositive: true, date: "18/11/2022" },
-  { id: "2", sn: "02", budgetNo: "36211235", description: "Purchase of office equipments", budgetedAmount: "400,000.00", actualAmount: "500,000.00", variance: "100,000.00", isPositive: false, date: "20/09/2022" },
-  { id: "3", sn: "03", budgetNo: "00211235", description: "Purchase of 10 units, 2Hp Hisense Air Conditions", budgetedAmount: "2,000,000.00", actualAmount: "1,800,000.00", variance: "200,000.00", isPositive: true, date: "01/09/2022" },
-  { id: "4", sn: "04", budgetNo: "00214465", description: "Purchase of 10 units, 2Hp Hisense Air Conditions", budgetedAmount: "1,400,000.00", actualAmount: "1,380,000.00", variance: "20,000.00", isPositive: true, date: "11/05/2022" },
-  { id: "5", sn: "05", budgetNo: "36211235", description: "Purchase of office equipments", budgetedAmount: "400,000.00", actualAmount: "500,000.00", variance: "100,000.00", isPositive: false, date: "20/09/2022" },
-  { id: "6", sn: "06", budgetNo: "00211235", description: "Purchase of 10 units, 2Hp Hisense Air Conditions", budgetedAmount: "1,400,000.00", actualAmount: "1,380,000.00", variance: "20,000.00", isPositive: true, date: "18/11/2022" },
-  { id: "7", sn: "07", budgetNo: "00211235", description: "Purchase of 10 units, 2Hp Hisense Air Conditions", budgetedAmount: "1,400,000.00", actualAmount: "1,380,000.00", variance: "20,000.00", isPositive: true, date: "18/11/2022" },
-];
+import { useGetBudgetsQuery, useDeleteBudgetMutation, Budget } from "@/app/redux/dashboard/budgetApi";
+import { ConfirmDeleteModal } from "@/app/components/ui/DeleteConfirmModal";
 
 export default function BudgetPage() {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [targetToDelete, setTargetToDelete] = useState<{ id: string; name: string } | null>(null);
+
+  const { data, isLoading, isFetching } = useGetBudgetsQuery({ page, limit });
+  const [deleteBudget, { isLoading: isDeleting }] = useDeleteBudgetMutation();
+
+  const list = data?.data ?? [];
+  const meta = data?.meta;
+
+  const formatCurrency = (value: string | number | null) => {
+    if (value === null) return "—";
+    const num = typeof value === "string" ? parseFloat(value) : value;
+    return `₦${num.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
+  };
+
+  const formatDate = (value: string) => new Date(value).toLocaleDateString("en-GB");
+
+  const handleConfirmDelete = async () => {
+    if (!targetToDelete) return;
+    try {
+      await deleteBudget(targetToDelete.id).unwrap();
+      toast.success("Budget deleted successfully");
+      setTargetToDelete(null);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to delete budget.");
+    }
+  };
+
+  const columns: Column<Budget>[] = [
+    { header: "Budget No.", accessor: "budgetNo" },
+    { header: "Budget Description", accessor: "description", className: "font-semibold text-slate-800" },
+    { header: "Budgeted Amount (₦)", accessor: (row) => formatCurrency(row.budgetedAmount) },
+    { header: "Actual Amount (₦)", accessor: (row) => formatCurrency(row.actualAmount) },
+    {
+      header: "Variance (₦)",
+      accessor: (row) =>
+        row.variance !== null ? (
+          <span className={`font-semibold ${row.isPositiveVariance ? "text-emerald-600" : "text-rose-500"}`}>
+            {row.isPositiveVariance ? "+ " : "- "}
+            {Math.abs(row.variance).toLocaleString("en-NG", { minimumFractionDigits: 2 })}
+          </span>
+        ) : (
+          "—"
+        ),
+    },
+    {
+      header: "Status",
+      accessor: (row) => (
+        <span
+          className={`font-semibold ${
+            row.status === "PENDING"
+              ? "text-amber-500"
+              : row.status === "APPROVED"
+              ? "text-emerald-600"
+              : "text-rose-600"
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
+    },
+    { header: "Date", accessor: (row) => formatDate(row.createdAt) },
+  ];
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
-      {/* Top Metrics */}
       <BudgetMetrics />
 
-      {/* Banner Action Section */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+      <div className=" flex items-center justify-between">
         <h2 className="text-base font-bold text-slate-900">Create a Budget</h2>
         <Link href="/budget/create">
-          <button className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity">
+          <button className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-md cursor-pointer shadow-md hover:opacity-90 transition-opacity">
             Create Budget
           </button>
         </Link>
       </div>
 
-      {/* Table Section */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-6">
-        <h3 className="text-base font-bold text-slate-900">Budget History</h3>
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
+        <div className="px-6 py-6 border-b border-slate-100">
+          <h3 className="text-base font-bold text-slate-900">Budget History</h3>
+        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-slate-100 text-slate-400 font-bold">
-                <th className="pb-3 min-w-[40px]">S/N</th>
-                <th className="pb-3 min-w-[100px]">Budget No.</th>
-                <th className="pb-3 min-w-[280px]">Budget Description</th>
-                <th className="pb-3 min-w-[130px]">Budgeted Amount (₦)</th>
-                <th className="pb-3 min-w-[130px]">Actual Amount (₦)</th>
-                <th className="pb-3 min-w-[110px]">Variance (₦)</th>
-                <th className="pb-3 min-w-[100px]">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50 text-slate-700 font-medium">
-              {budgetHistoryList.map((row) => (
-                <tr key={row.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="py-3.5 text-slate-400">{row.sn}</td>
-                  <td className="py-3.5 text-slate-600">{row.budgetNo}</td>
-                  <td className="py-3.5 font-semibold text-slate-800">{row.description}</td>
-                  <td className="py-3.5 text-slate-800">{row.budgetedAmount}</td>
-                  <td className="py-3.5 text-slate-800">{row.actualAmount}</td>
-                  <td className={`py-3.5 font-semibold ${row.isPositive ? "text-emerald-600" : "text-rose-500"}`}>
-                    {row.isPositive ? `+ ${row.variance}` : `- ${row.variance}`}
-                  </td>
-                  <td className="py-3.5 text-slate-600">{row.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="p-6 overflow-visible">
+          <DataTable
+            columns={columns}
+            data={list}
+            isLoading={isLoading || isFetching}
+            emptyMessage="No budgets recorded yet."
+            currentPage={meta?.page ?? page}
+            totalPages={meta?.totalPages ?? 1}
+            itemsPerPage={limit}
+            onPageChange={setPage}
+            onItemsPerPageChange={(l) => {
+              setLimit(l);
+              setPage(1);
+            }}
+            renderAction={(row) => (
+              <ActionMenu
+                items={[
+                  {
+                    label: "Edit",
+                    icon: Pencil,
+                    onClick: () => {
+                      window.location.href = `/budget/edit/${row.id}`;
+                    },
+                  },
+                  {
+                    label: "Delete",
+                    icon: Trash2,
+                    variant: "danger",
+                    onClick: () => setTargetToDelete({ id: row.id, name: row.description }),
+                  },
+                ]}
+              />
+            )}
+          />
         </div>
       </div>
+
+      <ConfirmDeleteModal
+        isOpen={!!targetToDelete}
+        itemName={targetToDelete?.name}
+        title="Delete budget?"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setTargetToDelete(null)}
+      />
     </div>
   );
 }
