@@ -1,26 +1,62 @@
+// app/(dashboard)/capacity-building/[id]/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import {
+  useGetTrainingByIdQuery,
+  useUpdateTrainingStatusMutation,
+  TrainingStatus,
+} from "@/app/redux/dashboard/trainingApi";
 
-const participants = [
-  "Fatima Mohammed",
-  "Ibrahim Bankole",
-  "Otor John Stephen",
-  "Abubakar Alghazali",
-  "Ranky Akab",
-  "Sadiq Lukman",
-];
+const statusColor: Record<TrainingStatus, string> = {
+  TODO: "text-slate-500",
+  INPROGRESS: "text-amber-500",
+  COMPLETED: "text-emerald-600",
+};
 
-export default function TrainingDetailsPage() {
-  const [status, setStatus] = useState<string>("Inprogress");
-  const [selectedStatusOption, setSelectedStatusOption] = useState<string>("");
+const statusLabel: Record<TrainingStatus, string> = {
+  TODO: "To-do",
+  INPROGRESS: "Inprogress",
+  COMPLETED: "Completed",
+};
 
-  const handleUpdateStatus = () => {
-    if (selectedStatusOption) {
-      setStatus(selectedStatusOption);
+export default function TrainingDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  const { data, isLoading } = useGetTrainingByIdQuery(id);
+  const [updateStatus, { isLoading: isUpdating }] = useUpdateTrainingStatusMutation();
+
+  const [selectedStatus, setSelectedStatus] = useState<TrainingStatus | "">("");
+
+  const handleUpdateStatus = async () => {
+    if (!selectedStatus) {
+      toast.error("Please select a status");
+      return;
+    }
+
+    try {
+      await updateStatus({ id, status: selectedStatus }).unwrap();
+      toast.success("Training status updated");
+      setSelectedStatus("");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update status.");
     }
   };
+
+  if (isLoading) {
+    return <div className="py-16 text-center text-slate-400 text-sm">Loading...</div>;
+  }
+
+  if (!data?.data) {
+    return <div className="py-16 text-center text-rose-500 text-sm">Training request not found.</div>;
+  }
+
+  const training = data.data;
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-10">
@@ -29,59 +65,64 @@ export default function TrainingDetailsPage() {
       </Link>
 
       <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm space-y-8 min-h-[450px]">
-        <h1 className="text-lg font-bold text-slate-900">Staff Health and Safety Training</h1>
+        <h1 className="text-lg font-bold text-slate-900">{training.description}</h1>
 
-        {/* Training Meta Details */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 border-b border-slate-100 pb-6">
           <div>
             <p className="text-[11px] font-medium text-slate-400">Training type</p>
-            <p className="text-xs font-bold text-slate-900 mt-1">Team training</p>
+            <p className="text-xs font-bold text-slate-900 mt-1">{training.type} training</p>
           </div>
           <div>
             <p className="text-[11px] font-medium text-slate-400">Training duration</p>
-            <p className="text-xs font-bold text-slate-900 mt-1">3 weeks</p>
+            <p className="text-xs font-bold text-slate-900 mt-1">
+              {training.durationValue} {training.durationUnit}
+            </p>
           </div>
           <div>
             <p className="text-[11px] font-medium text-slate-400">Training mode</p>
-            <p className="text-xs font-bold text-slate-900 mt-1">Physical</p>
+            <p className="text-xs font-bold text-slate-900 mt-1">{training.mode}</p>
           </div>
           <div>
             <p className="text-[11px] font-medium text-slate-400">Training status</p>
-            <p className="text-xs font-bold text-amber-500 mt-1">{status}</p>
+            <p className={`text-xs font-bold mt-1 ${statusColor[training.status]}`}>
+              {statusLabel[training.status]}
+            </p>
           </div>
         </div>
 
-        {/* Participant List */}
         <div className="space-y-3">
           <h2 className="text-xs font-bold text-slate-900">Training participant</h2>
           <ol className="space-y-2 text-xs font-medium text-slate-700">
-            {participants.map((person, index) => (
-              <li key={index}>
-                {index + 1}. {person}
+            {training.participants.map((p, index) => (
+              <li key={p.id}>
+                {index + 1}. {p.staff.firstName} {p.staff.lastName}
+                {p.staff.designation && (
+                  <span className="text-slate-400"> — {p.staff.designation}</span>
+                )}
               </li>
             ))}
           </ol>
         </div>
 
-        {/* Update Status Dropdown */}
         <div className="pt-6 space-y-2">
           <label className="text-xs font-semibold text-slate-700 block">Update status</label>
           <div className="flex items-center gap-4 max-w-md">
             <select
-              value={selectedStatusOption}
-              onChange={(e) => setSelectedStatusOption(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value as TrainingStatus)}
+              className="w-full px-3.5 py-2.5 text-xs text-slate-900 bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-sky-500 transition-colors"
             >
               <option value="">Select option</option>
-              <option value="To-do">To-do</option>
-              <option value="Inprogress">Inprogress</option>
-              <option value="Completed">Completed</option>
+              <option value="TODO">To-do</option>
+              <option value="INPROGRESS">Inprogress</option>
+              <option value="COMPLETED">Completed</option>
             </select>
             <button
               onClick={handleUpdateStatus}
-              className="px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity shrink-0"
+              disabled={isUpdating}
+              className="px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity shrink-0 disabled:opacity-50"
             >
-              Update
+              {isUpdating ? "Updating..." : "Update"}
             </button>
           </div>
         </div>

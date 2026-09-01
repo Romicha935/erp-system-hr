@@ -18,6 +18,6 @@ export const baseApi = createApi({
     },
   }),
 
-tagTypes: ["Staff", "TaxDefinition", "SalaryDefinition", "Procurement", "Payslip", "Payroll","PaymentVoucher","Memo","Circular","Maintenance","Logistics","Budget","Inventory"],
+tagTypes: ["Staff", "TaxDefinition", "SalaryDefinition", "Procurement", "Payslip", "Payroll","PaymentVoucher","Memo","Circular","Maintenance","Logistics","Budget","Inventory","Notification","Training"],
   endpoints: () => ({}),
 });
