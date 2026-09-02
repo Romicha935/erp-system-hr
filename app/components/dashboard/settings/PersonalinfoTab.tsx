@@ -176,7 +176,7 @@ export const PersonalInfoTab: React.FC = () => {
           <button
             type="submit"
             disabled={isUpdating}
-            className="px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-sm rounded-xl shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="px-8 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-sm rounded-md cursor-pointer shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {isUpdating ? "Saving..." : "Save Changes"}
           </button>
