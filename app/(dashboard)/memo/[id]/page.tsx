@@ -325,7 +325,7 @@ export default function ViewMemoDetailsPage({
                 placeholder="Enter remark"
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
+                className="w-full px-3.5 py-2.5 text-xs text-gray-800 bg-slate-50/50 border border-slate-200 rounded-xl outline-none focus:border-blue-500"
               />
             </div>
 
@@ -333,7 +333,7 @@ export default function ViewMemoDetailsPage({
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="w-full py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-xl shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
+                className="w-full py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs rounded-md cursor-pointer shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
               >
                 {isSubmitting ? "Submitting..." : "Submit"}
               </button>
