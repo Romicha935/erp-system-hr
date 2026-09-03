@@ -25,15 +25,15 @@ export default function AuthLayoutWrapper({
           {/* Logo Section */}
           <div className="flex items-center gap-2">
             <div className="flex -space-x-1">
-              <Image src="/logo.png" alt="" width={40} height={40} />
+              <Image src="/logoo.png" alt="" width={40} height={40} />
              
             </div>
-            <div>
+            {/* <div>
               <span className="text-xl font-bold text-slate-800 tracking-tight block leading-none">
                 UiUxOtor
               </span>
               <span className="text-xs text-slate-500 font-normal">ERP System</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Top-Right Button (Like "Sign Up" or "Login") */}

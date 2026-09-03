@@ -5,14 +5,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { ChevronDown, LogOut, Settings } from "lucide-react";
+import { ChevronDown, LogOut, Menu, Settings } from "lucide-react";
 import { NotificationBell } from "../ui/NotificationBell";
 import { ConfirmActionModal } from "../ui/ConfirmActionModal";
 import { useGetMyProfileQuery } from "@/app/redux/dashboard/settingsApi";
 import { useLogoutMutation } from "@/app/redux/api/authApi";
 import { logout as logoutAction } from "@/app/redux/slices/authSlice";
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -58,7 +62,7 @@ export const Header: React.FC = () => {
     try {
       await logoutMutation().unwrap();
     } catch {
-    
+
     } finally {
       dispatch(logoutAction());
       setIsLogoutModalOpen(false);
@@ -68,18 +72,28 @@ export const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 lg:left-64 z-40 h-[72px] bg-white border-b border-slate-200 mx-6 mb-6">
+    <header className="fixed top-0 left-0 right-0 lg:left-64 z-40 h-[72px] bg-white border-b border-slate-200 lg:mx-6 mb-6">
       <div className="h-full flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <h1 className="truncate text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-              Welcome, {firstName}
-            </h1>
-            <span className="text-lg sm:text-xl"></span>
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            type="button"
+            onClick={onMenuClick}
+            className="lg:hidden shrink-0 p-2 rounded-lg text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+          >
+            <Menu size={20} />
+          </button>
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h1 className="truncate text-base font-extrabold tracking-tight text-slate-900 sm:text-xl lg:text-2xl">
+                Welcome, {firstName}
+              </h1>
+              <span className="text-lg sm:text-xl"></span>
+            </div>
+            <p className="mt-1 text-[11px] font-medium text-slate-400 sm:text-xs">
+              Today is {formattedDate}.
+            </p>
           </div>
-          <p className="mt-1 text-[11px] font-medium text-slate-400 sm:text-xs">
-            Today is {formattedDate}.
-          </p>
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-4">

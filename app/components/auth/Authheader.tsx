@@ -12,20 +12,20 @@ export default function AuthHeader({ title, subtitle }: AuthHeaderProps) {
       {/* 1. Logo & Brand */}
       <div className="flex items-center gap-3.5 mb-8">
         <Image 
-          src="/logo.png" // Put your logo image here
+          src="/logoo.png" 
           alt="UiUxOtor ERP Logo" 
-          width={40} 
-          height={40} 
+          width={64} 
+          height={64} 
           className="rounded-full"
         />
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <span className="text-xl font-bold text-slate-800 tracking-tight">
             UiUxOtor
           </span>
           <span className="text-[11px] uppercase text-slate-500 font-semibold tracking-wider -mt-0.5">
             ERP System
           </span>
-        </div>
+        </div> */}
       </div>
 
       {/* 2. Welcome/Action Text */}
