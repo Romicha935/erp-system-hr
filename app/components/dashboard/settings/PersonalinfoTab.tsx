@@ -57,7 +57,7 @@ export const PersonalInfoTab: React.FC = () => {
     e.preventDefault();
     try {
       await updateProfile({ firstName, lastName, email, phone }).unwrap();
-      toast.success("Profile updated successfully! 🎉");
+      toast.success("Profile updated successfully!");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to update profile.");
     }
@@ -155,7 +155,7 @@ export const PersonalInfoTab: React.FC = () => {
               className={inputClass}
               disabled={!hasStaff}
               placeholder={hasStaff ? "Enter phone number" : "Not available"}
-            />
+            /> 
           </div>
         </div>
 

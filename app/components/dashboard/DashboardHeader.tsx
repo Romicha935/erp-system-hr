@@ -78,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           <button
             type="button"
             onClick={onMenuClick}
-            className="lg:hidden shrink-0 p-2 rounded-lg text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+            className="lg:hidden shrink-0 p-2 rounded-lg text-slate-500 hover:bg-slate-50 hover:text-slate-900 cursor-pointer transition-colors"
           >
             <Menu size={20} />
           </button>
@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             <button
               type="button"
               onClick={() => setIsProfileOpen((prev) => !prev)}
-              className="group flex items-center gap-2 rounded-xl p-1.5 pr-2 transition-all duration-200 hover:bg-slate-50 sm:gap-3 sm:pr-3"
+              className="group flex items-center gap-2 rounded-xl p-1.5 pr-2 transition-all cursor-pointer duration-200 hover:bg-slate-50 sm:gap-3 sm:pr-3"
             >
               <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-slate-100 sm:h-10 sm:w-10">
                 <img src={avatarUrl} alt={`${fullName} avatar`} className="h-full w-full object-cover" />
