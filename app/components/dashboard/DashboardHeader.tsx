@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 lg:left-64 z-40 h-[72px] bg-white border-b border-slate-200 lg:mx-6 mb-6">
+    <header className="fixed top-0 left-0 right-0 lg:left-64 z-40 h-[72px] bg-white border-b border-slate-200 rounded-md lg:mx-6 mb-6">
       <div className="h-full flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 min-w-0">
           <button

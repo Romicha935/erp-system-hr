@@ -10,7 +10,7 @@ export default function AuthHeader({ title, subtitle }: AuthHeaderProps) {
   return (
     <div className="flex flex-col gap-1.5 mb-10">
       {/* 1. Logo & Brand */}
-      <div className="flex items-center gap-3.5 mb-8">
+      <div className="flex items-center gap-2 mb-8">
         <Image 
           src="/logoo.png" 
           alt="UiUxOtor ERP Logo" 
@@ -18,14 +18,10 @@ export default function AuthHeader({ title, subtitle }: AuthHeaderProps) {
           height={64} 
           className="rounded-full"
         />
-        {/* <div className="flex flex-col">
-          <span className="text-xl font-bold text-slate-800 tracking-tight">
-            UiUxOtor
-          </span>
-          <span className="text-[11px] uppercase text-slate-500 font-semibold tracking-wider -mt-0.5">
-            ERP System
-          </span>
-        </div> */}
+           <div className="leading-tight">
+              <p className="text-sm font-bold text-slate-900">ERP System</p>
+              <p className="text-[11px] font-medium text-slate-400">HR Management</p>
+            </div>
       </div>
 
       {/* 2. Welcome/Action Text */}

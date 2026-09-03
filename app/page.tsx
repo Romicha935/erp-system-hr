@@ -348,9 +348,24 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer className="border-t border-slate-200/80 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center">
-            <Image src="/logoo.png" alt="Logo" width={64} height={64} className="object-contain" />
-          </div>
+          <div className="flex items-center gap-2 min-w-0">
+  <Image
+    src="/logoo.png"
+    alt="ERP System Logo"
+    width={40}
+    height={40}
+    className="w-10 h-10 object-contain shrink-0"
+  />
+
+  <div className="min-w-0 leading-tight">
+    <p className="text-sm font-bold text-slate-900 whitespace-nowrap">
+      ERP System
+    </p>
+    <p className="text-[11px] font-medium text-slate-400 whitespace-nowrap">
+      HR Management
+    </p>
+  </div>
+</div>
 
           <p className="text-xs text-slate-500 font-medium text-center">
             Enterprise Operations & HR Management. © {new Date().getFullYear()} All rights reserved.
