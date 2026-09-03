@@ -60,7 +60,7 @@ export const StaffFilterBar: React.FC<StaffFilterBarProps> = ({
               <option value="ALL">All Roles</option>
               <option value="ADMIN">Admin</option>
               <option value="HR">Human Resources</option>
-              <option value="STAFF">Staff</option>
+              {/* <option value="STAFF">Staff</option> */}
             </select>
             <ChevronDown 
               size={16} 

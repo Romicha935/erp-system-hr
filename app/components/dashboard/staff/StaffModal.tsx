@@ -190,36 +190,106 @@ export const StaffForm: React.FC<StaffFormProps> = ({
       </option>
       <option value="ADMIN" className="text-slate-900">Admin</option>
       <option value="HR" className="text-slate-900">Human Resources</option>
-      <option value="STAFF" className="text-slate-900">Staff</option>
+      {/* <option value="STAFF" className="text-slate-900">Staff</option> */}
     </select>
     <ChevronIcon />
   </div>
 </div>
 
               {/* Designation */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-700">Designation</label>
-                <div className="relative">
-                  <select
-                    value={formData.designation}
-                    onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                    className={`${selectClass} ${!formData.designation ? "text-slate-400 cursor-pointer" : ""}`}
-                    required
-                  >
-                    <option value="" disabled>
-                      Select designation
-                    </option>
-                    <option value="Operations" className="text-slate-900">Frontend Developer</option>
-                    <option value="Management" className="text-slate-900">Backend Developer</option>
-                    <option value="Customer Service" className="text-slate-900">UI/UX Designer</option>
-                  </select>
-                  <ChevronIcon />
-                </div>
-              </div>
+         <div className="flex flex-col gap-1.5">
+  <label className="text-xs font-semibold text-slate-700">
+    Designation
+  </label>
+
+  <div className="relative">
+    <select
+      value={formData.designation}
+      onChange={(e) =>
+        setFormData({
+          ...formData,
+          designation: e.target.value,
+        })
+      }
+      className={`${selectClass} ${
+        !formData.designation
+          ? "text-slate-400 cursor-pointer"
+          : ""
+      }`}
+      required
+    >
+      <option value="" disabled>
+        Select designation
+      </option>
+
+      <option value="Frontend Developer" className="text-slate-900">
+        Frontend Developer
+      </option>
+
+      <option value="Backend Developer" className="text-slate-900">
+        Backend Developer
+      </option>
+
+      <option value="Full Stack Developer" className="text-slate-900">
+        Full Stack Developer
+      </option>
+
+      <option value="Software Engineer" className="text-slate-900">
+        Software Engineer
+      </option>
+
+      <option value="UI/UX Designer" className="text-slate-900">
+        UI/UX Designer
+      </option>
+
+      <option value="QA Engineer" className="text-slate-900">
+        QA Engineer
+      </option>
+
+      <option value="Project Manager" className="text-slate-900">
+        Project Manager
+      </option>
+
+      <option value="HR Executive" className="text-slate-900">
+        HR Executive
+      </option>
+
+      <option value="Accountant" className="text-slate-900">
+        Accountant
+      </option>
+
+      <option value="Sales Executive" className="text-slate-900">
+        Sales Executive
+      </option>
+
+      <option value="Marketing Executive" className="text-slate-900">
+        Marketing Executive
+      </option>
+
+      <option value="Customer Support Executive" className="text-slate-900">
+        Customer Support Executive
+      </option>
+
+      <option value="Team Lead" className="text-slate-900">
+        Team Lead
+      </option>
+
+      <option value="Manager" className="text-slate-900">
+        Manager
+      </option>
+
+      <option value="Other" className="text-slate-900">
+        Other
+      </option>
+    </select>
+
+    <ChevronIcon />
+  </div>
+</div>
 
               <Input
                 label="Staff ID"
-                placeholder="Staff ID"
+                placeholder="e.g. EMP-001, EMP-002"
                 value={formData.staffId}
                 onChange={(e) => setFormData({ ...formData, staffId: e.target.value })}
                 required
