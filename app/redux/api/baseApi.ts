@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || "https://ery-system-backend.onrender.com",
   prepareHeaders: (headers) => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
