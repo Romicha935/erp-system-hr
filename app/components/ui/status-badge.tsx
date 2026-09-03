@@ -1,25 +1,29 @@
 import { cn } from "@/app/lib/utils";
 import React from "react";
 
-
 interface StatusBadgeProps {
-  status: "Pending" | "Approved" | "Rejected";
+  status: "PENDING" | "APPROVED" | "REJECTED" | "VERIFIED";
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  const isPending = status === "Pending";
-  const isApproved = status === "Approved";
+  const statusLabel = {
+    PENDING: "Pending",
+    APPROVED: "Approved",
+    REJECTED: "Rejected",
+    VERIFIED: "Verified",
+  };
 
   return (
     <span
       className={cn(
         "px-3 py-1 rounded-full text-xs font-medium inline-block",
-        isPending && "text-amber-500 bg-amber-50",
-        isApproved && "text-emerald-500 bg-emerald-50",
-        status === "Rejected" && "text-rose-500 bg-rose-50"
+        status === "PENDING" && "text-amber-500 bg-amber-50",
+        status === "APPROVED" && "text-emerald-500 bg-emerald-50",
+        status === "REJECTED" && "text-rose-500 bg-rose-50",
+        status === "VERIFIED" && "text-blue-500 bg-blue-50",
       )}
     >
-      {status}
+      {statusLabel[status]}
     </span>
   );
 };

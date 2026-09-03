@@ -1,87 +1,46 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/app/lib/utils";
-import { LayoutDashboard, Users } from "lucide";
-import { Bell, BriefcaseBusiness, CreditCard, FileText, GraduationCap, LayoutDashboardIcon, Megaphone, Package, ShoppingCart, Truck, User, WalletCards, Wrench } from "lucide-react";
+import {
+  Bell,
+  BriefcaseBusiness,
+  CreditCard,
+  FileText,
+  GraduationCap,
+  LayoutDashboardIcon,
+  Megaphone,
+  Package,
+  ShoppingCart,
+  Truck,
+  User,
+  WalletCards,
+  Wrench,
+} from "lucide-react";
 
 const navItems = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: <LayoutDashboardIcon />,
-  },
-  {
-    name: "Staff",
-    href: "/staff",
-    icon: <User />,
-  },
-  {
-    name: "Payment Voucher",
-    href: "/payments",
-    icon: <WalletCards />,
-  },
-  {
-    name: "Payroll",
-    href: "/payroll",
-    icon: <CreditCard />,
-  },
-  {
-    name: "Memo",
-    href: "/memo",
-    icon: <FileText />,
-  },
-  {
-    name: "Circulars",
-    href: "/circulars",
-    icon: <Megaphone />,
-  },
-  {
-    name: "Maintenance",
-    href: "/maintenance",
-    icon: <Wrench />,
-  },
-  {
-    name: "Logistics",
-    href: "/logistics",
-    icon: <Truck />,
-  },
-  {
-    name: "Office Budget",
-    href: "/budget",
-    icon: <BriefcaseBusiness />,
-  },
-  {
-    name: "Stocks and Inventory",
-    href: "/inventory",
-    icon: <Package />,
-  },
-  {
-    name: "Notifications",
-    href: "/notifications",
-    icon: <Bell />,
-  },
-  {
-    name: "Capacity Building",
-    href: "/capacity-building",
-    icon: <GraduationCap />,
-  },
-  {
-    name: "Procurements",
-    href: "/procurement",
-    icon: <ShoppingCart />,
-  },
+  { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboardIcon /> },
+  { name: "Staff", href: "/staff", icon: <User /> },
+  { name: "Payment Voucher", href: "/payments", icon: <WalletCards /> },
+  { name: "Payroll", href: "/payroll", icon: <CreditCard /> },
+  { name: "Memo", href: "/memo", icon: <FileText /> },
+  { name: "Circulars", href: "/circulars", icon: <Megaphone /> },
+  { name: "Maintenance", href: "/maintenance", icon: <Wrench /> },
+  { name: "Logistics", href: "/logistics", icon: <Truck /> },
+  { name: "Office Budget", href: "/budget", icon: <BriefcaseBusiness /> },
+  { name: "Stocks and Inventory", href: "/inventory", icon: <Package /> },
+  { name: "Notifications", href: "/notifications", icon: <Bell /> },
+  { name: "Capacity Building", href: "/capacity-building", icon: <GraduationCap /> },
+  { name: "Procurements", href: "/procurement", icon: <ShoppingCart /> },
 ];
 
-
-
 export const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const pathname = usePathname();
 
   return (
     <aside className="w-64 bg-white min-h-screen border-r border-slate-100 flex flex-col py-6 px-4 shrink-0 hidden lg:flex">
-      {/* Brand Logo */}
       <div className="flex flex-col items-center gap-2 px-3 mb-8">
         <img src="/logo.png" alt="" className="h-10 w-10" />
         <div>
@@ -90,15 +49,15 @@ export const Sidebar = () => {
         </div>
       </div>
 
-      {/* Navigation List */}
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {
-          const isActive = activeItem === item.name;
+          const isActive =
+            pathname === item.href || pathname.startsWith(`${item.href}/`);
+
           return (
             <Link
               key={item.name}
               href={item.href}
-              onClick={() => setActiveItem(item.name)}
               className={cn(
                 "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
                 isActive
