@@ -12,8 +12,8 @@ import { Input } from "@/app/components/ui/input";
 import { useLoginMutation } from "../redux/api/authApi";
 import { setCredentials } from "../redux/slices/authSlice";
 
-
-
+const DEMO_EMAIL = "admin@erp.com";
+const DEMO_PASSWORD = "Admin@1234";
 
 export default function RootLoginPage() {
   const router = useRouter();
@@ -33,7 +33,6 @@ export default function RootLoginPage() {
         password,
       }).unwrap();
 
-      // Save login credentials in Redux
       dispatch(
         setCredentials({
           user: response.user,
@@ -54,6 +53,11 @@ export default function RootLoginPage() {
     }
   };
 
+  const handleUseDemoCredentials = () => {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+  };
+
   return (
     <AuthSplitLayout
       headerTitle="Please Sign In"
@@ -61,9 +65,22 @@ export default function RootLoginPage() {
       submitButtonText="Sign In"
       isSubmitButtonLoading={isLoading}
       onSubmit={handleLogin}
-    //   topActionText="Sign Up"
       topActionLink="/register"
     >
+      <div className="rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3">
+        <p className="text-xs font-semibold text-blue-900">Just browsing?</p>
+        <p className="mt-0.5 text-xs text-blue-700">
+          Use the demo admin account to explore the dashboard.
+        </p>
+        <button
+          type="button"
+          onClick={handleUseDemoCredentials}
+          className="mt-2 text-xs font-semibold text-blue-700 underline hover:text-blue-800"
+        >
+          Fill demo credentials
+        </button>
+      </div>
+
       <Input
         label="Email address"
         type="email"
@@ -99,13 +116,6 @@ export default function RootLoginPage() {
             Remember me
           </label>
         </div>
-
-        {/* <Link
-          href="/forgot-password"
-          className="text-sm font-medium text-blue-700 hover:text-blue-800 hover:underline"
-        >
-          I forgot my password
-        </Link> */}
       </div>
     </AuthSplitLayout>
   );
