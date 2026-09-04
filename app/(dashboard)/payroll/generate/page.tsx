@@ -90,7 +90,7 @@ export default function GeneratePayrollPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       <Link
         href="/payroll"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"

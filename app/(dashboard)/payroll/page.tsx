@@ -13,7 +13,7 @@ export default function PayrollPage() {
   const [activeTab, setActiveTab] = useState<"salary" | "tax" | "payslips" | "payroll">("salary");
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 w-full">
       {/* Top Metrics & Chart Grid */}
       <div className="">
         <div className="lg:col-span-7">

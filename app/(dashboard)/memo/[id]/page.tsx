@@ -30,7 +30,7 @@ const Skeleton = ({ className = "" }: { className?: string }) => (
 // Details page skeleton
 const MemoDetailsSkeleton = () => {
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       {/* Back */}
       <Skeleton className="h-4 w-16" />
 
@@ -190,7 +190,7 @@ export default function ViewMemoDetailsPage({
   const isPending = memo.status === "PENDING";
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       <Link
         href="/memo"
         className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline"

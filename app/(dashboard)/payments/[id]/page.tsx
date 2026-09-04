@@ -84,7 +84,7 @@ export default function PaymentVoucherDetailPage({
   const isVerified = voucher.status === "VERIFIED";
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-10">
+    <div className="space-y-6 w-full pb-10">
       <Link
         href="/payments"
         className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"

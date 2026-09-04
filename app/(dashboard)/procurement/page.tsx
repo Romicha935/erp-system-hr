@@ -95,7 +95,7 @@ export default function ProcurementPage() {
   ];
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-10">
+    <div className="space-y-6 w-full pb-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((item, index) => {
           const Icon = item.icon;

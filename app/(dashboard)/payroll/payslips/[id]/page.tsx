@@ -38,7 +38,7 @@ export default function PayslipDetailsPage({
   const netSalaryNum = parseFloat(payslip.netSalary || "0");
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       <Link href="/payroll" className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline">
         ‹ Back
       </Link>

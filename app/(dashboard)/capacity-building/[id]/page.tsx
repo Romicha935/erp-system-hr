@@ -27,7 +27,7 @@ const statusLabel: Record<TrainingStatus, string> = {
 // ====================
 const TrainingDetailsSkeleton = () => {
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       {/* Back button skeleton */}
       <div className="h-4 w-12 bg-slate-200 rounded animate-pulse" />
 
@@ -130,7 +130,7 @@ export default function TrainingDetailsPage({
   const training = data.data;
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       {/* Back */}
       <Link
         href="/capacity-building"

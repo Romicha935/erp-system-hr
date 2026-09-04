@@ -45,7 +45,7 @@ export default function CreateBudgetPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       <Link href="/budget" className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:underline">
         ‹ Back
       </Link>

@@ -40,7 +40,7 @@ export default function MaintenanceDetailsPage({
 
  if (isLoading) {
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10 animate-pulse">
+    <div className="space-y-6 w-full mx-auto pb-10 animate-pulse">
       {/* Back skeleton */}
       <div className="h-4 w-16 bg-slate-200 rounded" />
 
@@ -73,7 +73,7 @@ export default function MaintenanceDetailsPage({
   const maintenance = data.data;
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full mx-auto pb-10">
       <Link href="/maintenance" className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:underline">
         ‹ Back
       </Link>

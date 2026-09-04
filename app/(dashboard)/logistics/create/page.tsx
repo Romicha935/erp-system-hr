@@ -72,7 +72,7 @@ export default function CreateLogisticsRequestPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full pb-10">
       <Link href="/logistics" className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:underline">
         ‹ Back
       </Link>

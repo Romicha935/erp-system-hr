@@ -43,7 +43,7 @@ export default function HRNotificationDetailsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full pb-10">
       {/* Back Link */}
       <Link href="/notifications" className="inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:underline">
         ‹ Back
@@ -74,7 +74,7 @@ export default function HRNotificationDetailsPage() {
                 {group.messages.map((msg, idx) => (
                   <div
                     key={idx}
-                    className="bg-slate-50 border border-slate-100 p-4 rounded-xl text-xs text-slate-600 leading-relaxed max-w-4xl"
+                    className="bg-slate-50 border border-slate-100 p-4 rounded-xl text-xs text-slate-600 leading-relaxed w-full"
                   >
                     {msg}
                   </div>

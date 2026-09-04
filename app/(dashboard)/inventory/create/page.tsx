@@ -341,7 +341,7 @@ export default function AddNewItemPage() {
 //   };
 
 //   return (
-//     <div className="space-y-6 max-w-6xl mx-auto pb-10">
+//     <div className="space-y-6 w-full mx-auto pb-10">
 //       <Link href="/inventory" className="inline-flex items-center gap-1 text-xs text-gray-800 font-semibold text-sky-600 hover:underline">
 //         ‹ Back
 //       </Link>

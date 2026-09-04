@@ -64,7 +64,7 @@ export default function NotificationsPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 max-w-6xl mx-auto pb-10">
+      <div className="space-y-6 w-full pb-10">
         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm h-16 animate-pulse" />
         <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm space-y-3">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -76,7 +76,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-10">
+    <div className="space-y-6 w-full pb-10">
       <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
         <h1 className="text-lg font-bold text-slate-900">
           Notifications <span className="font-semibold text-slate-700">({unreadCount} unread)</span>
